@@ -22,9 +22,35 @@
             vertical-align: middle;
         }
         .verde { background-color: green; }
-        .giallo { background-color: yellow; color: black; /* Per rendere il testo visibile */ }
+        .giallo { background-color: yellow; color: black; }
         .arancione { background-color: orange; }
         .rosso { background-color: red; }
+
+        #mappa-container {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 10px;
+            position: relative; /* Necessario per posizionare l'overlay */
+            width: 600px; /* Imposta una larghezza per il contenitore della mappa */
+            height: auto; /* L'altezza si adatterà proporzionalmente */
+        }
+
+        #tricarico-mappa-img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        #color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Permette gli eventi del mouse sulla mappa sottostante (se necessario) */
+            opacity: 0.5; /* Regola la trasparenza dell'overlay colorato */
+            background-color: transparent; /* Inizialmente trasparente */
+        }
     </style>
 </head>
 <body>
@@ -60,7 +86,13 @@
         <h2>Anteprima</h2>
         <div id="anteprima-oggi"></div>
         <div id="anteprima-domani"></div>
-        </div>
+    </div>
+
+    <div id="mappa-container">
+        <h2>Mappa di Tricarico</h2>
+        <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
+        <div id="color-overlay"></div>
+    </div>
 
     <script>
         function formatDate(date) {
@@ -86,13 +118,28 @@
             const allertaDomani = document.getElementById('allerta-domani').value;
             const dataOggi = document.getElementById('data-oggi').textContent;
             const dataDomani = document.getElementById('data-domani').textContent;
+            const colorOverlay = document.getElementById('color-overlay');
 
             document.getElementById('anteprima-oggi').innerHTML = `<p><strong>${dataOggi}:</strong> Allerta <span class="alert-display ${allertaOggi}"></span> ${allertaOggi}</p>`;
             document.getElementById('anteprima-domani').innerHTML = `<p><strong>${dataDomani}:</strong> Allerta <span class="alert-display ${allertaDomani}"></span> ${allertaDomani}</p>`;
 
-            // Qui potresti aggiungere la logica per integrare la mappa SVG e colorare le aree
-            // in base al livello di allerta. Questo richiederebbe JavaScript più avanzato
-            // per manipolare il DOM dell'SVG.
+            // Applica il colore di allerta all'overlay (potresti scegliere di usare l'allerta di oggi o una combinazione)
+            colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
+        }
+
+        function getAlertColor(livelloAllerta) {
+            switch (livelloAllerta) {
+                case 'verde':
+                    return 'transparent'; // Nessun colore di allerta
+                case 'giallo':
+                    return 'yellow';
+                case 'arancione':
+                    return 'orange';
+                case 'rosso':
+                    return 'red';
+                default:
+                    return 'transparent';
+            }
         }
     </script>
 </body>
