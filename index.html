@@ -30,9 +30,9 @@
             margin-top: 20px;
             border: 1px solid #eee;
             padding: 10px;
-            position: relative; /* Necessario per posizionare l'overlay */
-            width: 600px; /* Imposta una larghezza per il contenitore della mappa */
-            height: auto; /* L'altezza si adatterà proporzionalmente */
+            position: relative;
+            width: 600px; /* Imposta una larghezza */
+            height: auto;
         }
 
         #tricarico-mappa-img {
@@ -47,9 +47,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Permette gli eventi del mouse sulla mappa sottostante (se necessario) */
-            opacity: 0.5; /* Regola la trasparenza dell'overlay colorato */
-            background-color: transparent; /* Inizialmente trasparente */
+            pointer-events: none;
+            opacity: 0.5;
+            background-color: transparent;
         }
     </style>
 </head>
@@ -95,7 +95,7 @@
     </div>
 
     <script>
-       function formatDate(date) {
+        function formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('it-IT', options);
         }
@@ -111,8 +111,7 @@
             const selezione = document.getElementById(`allerta-${giorno}`);
             const visualizzazione = document.getElementById(`visualizzazione-${giorno}`);
             visualizzazione.className = `alert-display ${selezione.value}`;
-            // Applica il colore alla mappa anche qui, quando la selezione cambia
-            aggiornaColoreMappaOggi(); // Aggiorna la mappa in base all'allerta di oggi
+            aggiornaColoreMappaOggi();
         }
 
         function generaEVisualizza() {
@@ -125,7 +124,6 @@
             document.getElementById('anteprima-oggi').innerHTML = `<p><strong>${dataOggi}:</strong> Allerta <span class="alert-display ${allertaOggi}"></span> ${allertaOggi}</p>`;
             document.getElementById('anteprima-domani').innerHTML = `<p><strong>${dataDomani}:</strong> Allerta <span class="alert-display ${allertaDomani}"></span> ${allertaDomani}</p>`;
 
-            // Potresti decidere di colorare la mappa in base all'allerta di oggi o di domani
             colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
         }
 
@@ -150,9 +148,7 @@
             }
         }
 
-        // Inizializza il colore della mappa al caricamento della pagina
         aggiornaColoreMappaOggi();
-    </script>
     </script>
 </body>
 </html>
