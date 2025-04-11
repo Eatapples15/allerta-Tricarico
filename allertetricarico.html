@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Allerta Meteo Tricarico</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .alert-display {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .verde { background-color: green; }
+        .giallo { background-color: yellow; color: black; }
+        .arancione { background-color: orange; }
+        .rosso { background-color: red; }
+
+        #mappa-container {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 10px;
+            position: relative;
+            width: 600px; /* Imposta una larghezza */
+            height: auto;
+        }
+
+        #tricarico-mappa-img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        #color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.5;
+            background-color: transparent;
+        }
+    </style>
+</head>
+<body>
+    <h1>Report Allerta Meteo Comune di Tricarico</h1>
+
+    <div id="report-container">
+        <h2>Riepilogo Allerta</h2>
+        <p><strong>Oggi, <span id="data-oggi-report"></span>:</strong> Allerta <span class="alert-display" id="allerta-oggi-report-display"></span> <span id="allerta-oggi-report-text"></span></p>
+        <p><strong>Domani, <span id="data-domani-report"></span>:</strong> Allerta <span class="alert-display" id="allerta-domani-report-display"></span> <span id="allerta-domani-report-text"></span></p>
+    </div>
+
+    <div id="mappa-container">
+        <h2>Mappa di Tricarico (Allerta Oggi)</h2>
+        <img id="tricarico-mappa-report-img" src="tricarico.svg" alt="Mappa di Tricarico">
+        <div id="color-overlay-report"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportDataString = localStorage.getItem('reportData');
+
+            if (reportDataString) {
+                const reportData = JSON.parse(reportDataString);
+
+                document.getElementById('data-oggi-report').textContent = reportData.dataOggi;
+                document.getElementById('data-domani-report').textContent = reportData.dataDomani;
+
+                const allertaOggiDisplay = document.getElementById('allerta-oggi-report-display');
+                const allertaDomaniDisplay = document.getElementById('allerta-domani-report-display');
+                const allertaOggiText = document.getElementById('allerta-oggi-report-text');
+                const allertaDomaniText = document.getElementById('allerta-domani-report-text');
+                const colorOverlayReport = document.getElementById('color-overlay-report');
+
+                allertaOggiDisplay.className = `alert-display ${reportData.allertaOggi}`;
+                allertaDomaniDisplay.className = `alert-display ${reportData.allertaDomani}`;
+                allertaOggiText.textContent = reportData.allertaOggi.charAt(0).toUpperCase() + reportData.allertaOggi.slice(1);
+                allertaDomaniText.textContent = reportData.allertaDomani.charAt(0).toUpperCase() + reportData.allertaDomani.slice(1);
+
+                colorOverlayReport.style.backgroundColor = getAlertColor(reportData.allertaOggi);
+            } else {
+                document.getElementById('report-container').innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
+                document.getElementById('mappa-container').style.display = 'none';
+            }
+        });
+
+        function getAlertColor(livelloAllerta) {
+            switch (livelloAllerta) {
+                case 'verde':
+                    return 'transparent';
+                case 'giallo':
+                    return 'yellow';
+                case 'arancione':
+                    return 'orange';
+                case 'rosso':
+                    return 'red';
+                default:
+                    return 'transparent';
+            }
+        }
+    </script>
+</body>
+</html>
