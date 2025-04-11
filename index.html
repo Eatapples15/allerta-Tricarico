@@ -95,7 +95,7 @@
     </div>
 
     <script>
-        function formatDate(date) {
+       function formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             return date.toLocaleDateString('it-IT', options);
         }
@@ -111,6 +111,8 @@
             const selezione = document.getElementById(`allerta-${giorno}`);
             const visualizzazione = document.getElementById(`visualizzazione-${giorno}`);
             visualizzazione.className = `alert-display ${selezione.value}`;
+            // Applica il colore alla mappa anche qui, quando la selezione cambia
+            aggiornaColoreMappaOggi(); // Aggiorna la mappa in base all'allerta di oggi
         }
 
         function generaEVisualizza() {
@@ -123,14 +125,20 @@
             document.getElementById('anteprima-oggi').innerHTML = `<p><strong>${dataOggi}:</strong> Allerta <span class="alert-display ${allertaOggi}"></span> ${allertaOggi}</p>`;
             document.getElementById('anteprima-domani').innerHTML = `<p><strong>${dataDomani}:</strong> Allerta <span class="alert-display ${allertaDomani}"></span> ${allertaDomani}</p>`;
 
-            // Applica il colore di allerta all'overlay (potresti scegliere di usare l'allerta di oggi o una combinazione)
+            // Potresti decidere di colorare la mappa in base all'allerta di oggi o di domani
+            colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
+        }
+
+        function aggiornaColoreMappaOggi() {
+            const allertaOggi = document.getElementById('allerta-oggi').value;
+            const colorOverlay = document.getElementById('color-overlay');
             colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
         }
 
         function getAlertColor(livelloAllerta) {
             switch (livelloAllerta) {
                 case 'verde':
-                    return 'transparent'; // Nessun colore di allerta
+                    return 'transparent';
                 case 'giallo':
                     return 'yellow';
                 case 'arancione':
@@ -141,6 +149,10 @@
                     return 'transparent';
             }
         }
+
+        // Inizializza il colore della mappa al caricamento della pagina
+        aggiornaColoreMappaOggi();
+    </script>
     </script>
 </body>
 </html>
