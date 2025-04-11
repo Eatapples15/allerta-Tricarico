@@ -59,7 +59,7 @@
     <div class="alert-container">
         <h2>Oggi, <span id="data-oggi"></span></h2>
         <label for="allerta-oggi">Seleziona il livello di allerta:</label>
-        <select id="allerta-oggi" onchange="aggiornaVisualizzazione('oggi')">
+        <select id="allerta-oggi">
             <option value="verde">Verde - assente</option>
             <option value="giallo">Giallo - ordinaria</option>
             <option value="arancione">Arancione - moderata</option>
@@ -71,7 +71,7 @@
     <div class="alert-container">
         <h2>Domani, <span id="data-domani"></span></h2>
         <label for="allerta-domani">Seleziona il livello di allerta:</label>
-        <select id="allerta-domani" onchange="aggiornaVisualizzazione('domani')">
+        <select id="allerta-domani">
             <option value="verde">Verde - assente</option>
             <option value="giallo">Giallo - ordinaria</option>
             <option value="arancione">Arancione - moderata</option>
@@ -80,13 +80,7 @@
         <div class="alert-display" id="visualizzazione-domani"></div>
     </div>
 
-    <button onclick="generaEVisualizza()">Genera e Visualizza</button>
-
-    <div id="output-container" style="margin-top: 20px;">
-        <h2>Anteprima</h2>
-        <div id="anteprima-oggi"></div>
-        <div id="anteprima-domani"></div>
-    </div>
+    <button onclick="generaReport()">Genera Report</button>
 
     <div id="mappa-container">
         <h2>Mappa di Tricarico</h2>
@@ -107,30 +101,24 @@
         document.getElementById('data-oggi').textContent = formatDate(oggi);
         document.getElementById('data-domani').textContent = formatDate(domani);
 
-        function aggiornaVisualizzazione(giorno) {
-            const selezione = document.getElementById(`allerta-${giorno}`);
-            const visualizzazione = document.getElementById(`visualizzazione-${giorno}`);
-            visualizzazione.className = `alert-display ${selezione.value}`;
-            aggiornaColoreMappaOggi();
-        }
-
-        function generaEVisualizza() {
+        function generaReport() {
             const allertaOggi = document.getElementById('allerta-oggi').value;
             const allertaDomani = document.getElementById('allerta-domani').value;
             const dataOggi = document.getElementById('data-oggi').textContent;
             const dataDomani = document.getElementById('data-domani').textContent;
-            const colorOverlay = document.getElementById('color-overlay');
 
-            document.getElementById('anteprima-oggi').innerHTML = `<p><strong>${dataOggi}:</strong> Allerta <span class="alert-display ${allertaOggi}"></span> ${allertaOggi}</p>`;
-            document.getElementById('anteprima-domani').innerHTML = `<p><strong>${dataDomani}:</strong> Allerta <span class="alert-display ${allertaDomani}"></span> ${allertaDomani}</p>`;
+            const reportData = {
+                allertaOggi: allertaOggi,
+                allertaDomani: allertaDomani,
+                dataOggi: dataOggi,
+                dataDomani: dataDomani
+            };
 
-            colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
-        }
+            // Salva i dati nel localStorage per passarli all'altra pagina
+            localStorage.setItem('reportData', JSON.stringify(reportData));
 
-        function aggiornaColoreMappaOggi() {
-            const allertaOggi = document.getElementById('allerta-oggi').value;
-            const colorOverlay = document.getElementById('color-overlay');
-            colorOverlay.style.backgroundColor = getAlertColor(allertaOggi);
+            // Apri la nuova pagina
+            window.open('allertetricarico.html', '_blank');
         }
 
         function getAlertColor(livelloAllerta) {
@@ -148,7 +136,19 @@
             }
         }
 
-        aggiornaColoreMappaOggi();
+        function aggiornaColoreMappa(livelloAllerta) {
+            const colorOverlay = document.getElementById('color-overlay');
+            colorOverlay.style.backgroundColor = getAlertColor(livelloAllerta);
+        }
+
+        // Aggiorna il colore della mappa iniziale
+        const initialAllertaOggi = document.getElementById('allerta-oggi').value;
+        aggiornaColoreMappa(initialAllertaOggi);
+
+        // Aggiorna il colore della mappa quando cambia la selezione "Oggi"
+        document.getElementById('allerta-oggi').addEventListener('change', function() {
+            aggiornaColoreMappa(this.value);
+        });
     </script>
 </body>
 </html>
