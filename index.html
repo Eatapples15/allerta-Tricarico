@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allerta Meteo Tricarico</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .alert-container {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+        }
+        .alert-display {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        .verde { background-color: green; }
+        .giallo { background-color: yellow; color: black; /* Per rendere il testo visibile */ }
+        .arancione { background-color: orange; }
+        .rosso { background-color: red; }
+    </style>
+</head>
+<body>
+    <h1>Allerta Meteo Comune di Tricarico</h1>
+
+    <div class="alert-container">
+        <h2>Oggi, <span id="data-oggi"></span></h2>
+        <label for="allerta-oggi">Seleziona il livello di allerta:</label>
+        <select id="allerta-oggi" onchange="aggiornaVisualizzazione('oggi')">
+            <option value="verde">Verde - assente</option>
+            <option value="giallo">Giallo - ordinaria</option>
+            <option value="arancione">Arancione - moderata</option>
+            <option value="rosso">Rosso - Elevata</option>
+        </select>
+        <div class="alert-display" id="visualizzazione-oggi"></div>
+    </div>
+
+    <div class="alert-container">
+        <h2>Domani, <span id="data-domani"></span></h2>
+        <label for="allerta-domani">Seleziona il livello di allerta:</label>
+        <select id="allerta-domani" onchange="aggiornaVisualizzazione('domani')">
+            <option value="verde">Verde - assente</option>
+            <option value="giallo">Giallo - ordinaria</option>
+            <option value="arancione">Arancione - moderata</option>
+            <option value="rosso">Rosso - Elevata</option>
+        </select>
+        <div class="alert-display" id="visualizzazione-domani"></div>
+    </div>
+
+    <button onclick="generaEVisualizza()">Genera e Visualizza</button>
+
+    <div id="output-container" style="margin-top: 20px;">
+        <h2>Anteprima</h2>
+        <div id="anteprima-oggi"></div>
+        <div id="anteprima-domani"></div>
+        </div>
+
+    <script>
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('it-IT', options);
+        }
+
+        const oggi = new Date();
+        const domani = new Date();
+        domani.setDate(oggi.getDate() + 1);
+
+        document.getElementById('data-oggi').textContent = formatDate(oggi);
+        document.getElementById('data-domani').textContent = formatDate(domani);
+
+        function aggiornaVisualizzazione(giorno) {
+            const selezione = document.getElementById(`allerta-${giorno}`);
+            const visualizzazione = document.getElementById(`visualizzazione-${giorno}`);
+            visualizzazione.className = `alert-display ${selezione.value}`;
+        }
+
+        function generaEVisualizza() {
+            const allertaOggi = document.getElementById('allerta-oggi').value;
+            const allertaDomani = document.getElementById('allerta-domani').value;
+            const dataOggi = document.getElementById('data-oggi').textContent;
+            const dataDomani = document.getElementById('data-domani').textContent;
+
+            document.getElementById('anteprima-oggi').innerHTML = `<p><strong>${dataOggi}:</strong> Allerta <span class="alert-display ${allertaOggi}"></span> ${allertaOggi}</p>`;
+            document.getElementById('anteprima-domani').innerHTML = `<p><strong>${dataDomani}:</strong> Allerta <span class="alert-display ${allertaDomani}"></span> ${allertaDomani}</p>`;
+
+            // Qui potresti aggiungere la logica per integrare la mappa SVG e colorare le aree
+            // in base al livello di allerta. Questo richiederebbe JavaScript più avanzato
+            // per manipolare il DOM dell'SVG.
+        }
+    </script>
+</body>
+</html>
