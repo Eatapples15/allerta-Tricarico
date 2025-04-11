@@ -21,7 +21,7 @@
         .arancione { background-color: orange; }
         .rosso { background-color: red; }
 
-        #mappa-container {
+        #mappa-container-report { /* ID specifico per questa pagina */
             margin-top: 20px;
             border: 1px solid #eee;
             padding: 10px;
@@ -30,13 +30,13 @@
             height: auto;
         }
 
-        #tricarico-mappa-img {
+        #tricarico-mappa-report-img { /* Manteniamo questo ID */
             display: block;
             width: 100%;
             height: auto;
         }
 
-        #color-overlay-report {
+        #color-overlay-report { /* Manteniamo questo ID */
             position: absolute;
             top: 0;
             left: 0;
@@ -63,7 +63,7 @@
         <p><strong>Domani, <span id="data-domani-report"></span>:</strong> Allerta <span class="alert-display" id="allerta-domani-report-display"></span> <span id="allerta-domani-report-text"></span></p>
     </div>
 
-    <div id="mappa-container">
+    <div id="mappa-container-report">
         <h2>Mappa di Tricarico (Allerta Oggi)</h2>
         <img id="tricarico-mappa-report-img" src="tricarico.svg" alt="Mappa di Tricarico">
         <div id="color-overlay-report"></div>
@@ -87,6 +87,7 @@
                 const allertaDomaniText = document.getElementById('allerta-domani-report-text');
                 const colorOverlayReport = document.getElementById('color-overlay-report');
                 const timestampAggiornamento = document.getElementById('timestamp-aggiornamento');
+                const mappaContainerReport = document.getElementById('mappa-container-report'); // Ottieni il contenitore
 
                 allertaOggiDisplay.className = `alert-display ${reportData.allertaOggi}`;
                 allertaDomaniDisplay.className = `alert-display ${reportData.allertaDomani}`;
@@ -101,9 +102,12 @@
                 const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
                 timestampAggiornamento.textContent = `Aggiornato il ${giorno} alle ${ora}`;
 
+                // Assicurati che il contenitore della mappa sia visibile
+                mappaContainerReport.style.display = 'block';
+
             } else {
                 document.getElementById('report-container').innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
-                document.getElementById('mappa-container').style.display = 'none';
+                document.getElementById('mappa-container-report').style.display = 'none'; // Usa l'ID corretto
             }
         });
 
