@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mappa Allerta Tricarico</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        #mappa-container {
+            margin-top: 20px;
+            border: 1px solid #eee;
+            padding: 10px;
+            position: relative;
+            width: 600px; /* Imposta una larghezza */
+            height: auto;
+            margin: 0 auto; /* Centra la mappa */
+        }
+        #tricarico-mappa-img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        #color-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.5;
+            background-color: transparent;
+        }
+        #livello-allerta-testo {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mappa Allerta Tricarico</h1>
+    <h2 id="titolo-mappa"></h2>
+    <div id="mappa-container">
+        <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
+        <div id="color-overlay"></div>
+    </div>
+    <p id="livello-allerta-testo"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mappaDataString = localStorage.getItem('mappaData');
+
+            if (mappaDataString) {
+                const mappaData = JSON.parse(mappaDataString);
+                const livelloAllerta = mappaData.livelloAllerta;
+                const rischio = mappaData.rischio;
+
+                document.getElementById('titolo-mappa').textContent = `Allerta ${rischio.charAt(0).toUpperCase() + rischio.slice(1)} (Oggi)`;
+                document.getElementById('color-overlay').style.backgroundColor = getAlertColor(livelloAllerta);
+                document.getElementById('livello-allerta-testo').textContent = `Livello di Allerta: ${livelloAllerta.charAt(0).toUpperCase() + livelloAllerta.slice(1)}`;
+            } else {
+                document.body.innerHTML = '<p>Nessun dato per la mappa disponibile.</p>';
+            }
+        });
+
+        function getAlertColor(livelloAllerta) {
