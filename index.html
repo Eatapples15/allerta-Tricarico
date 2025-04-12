@@ -3,33 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Rischio Idrico - Tricarico</title>
+    <title>Allerta Meteo Tricarico</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px;
             color: #333;
-            background-color: #f4f4f4;
         }
-        h1, h2, h3 {
+        h1, h2 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 20px;
         }
-        .alert-display {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-            vertical-align: middle;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .verde { background-color: #2ecc71; }
-        .giallo { background-color: #f1c40f; color: black; }
-        .arancione { background-color: #e67e22; color: white; }
-        .rosso { background-color: #c0392b; color: white; }
-        .report-section {
+        .alert-container {
             background-color: #fff;
             padding: 20px;
             margin-bottom: 20px;
@@ -37,56 +23,286 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-left: 5px solid #3498db;
         }
-        #timestamp-aggiornamento {
-            margin-top: 15px;
-            font-size: 0.8em;
-            color: #777;
+        .rischio-selector {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .rischio-selector label {
+            margin-right: 15px;
+            flex-basis: 250px;
+            text-align: right;
+            font-weight: bold;
+            color: #555;
+        }
+        .rischio-selector select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+            font-size: 1em;
+        }
+        .alert-display {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 15px;
+            vertical-align: middle;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .verde { background-color: #2ecc71; }
+        .giallo { background-color: #f1c40f; color: black; }
+        .arancione { background-color: #e67e22; color: white; }
+        .rosso { background-color: #c0392b; color: white; }
+
+        #mappa-container {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #3498db;
             text-align: center;
+            position: relative;
+        }
+        #tricarico-mappa-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+        }
+        #color-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
+            pointer-events: none;
+            opacity: 0.5;
+            background-color: transparent;
+            border-radius: 8px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #button-container {
+            text-align: center;
+            margin-bottom: 30px;
         }
     </style>
 </head>
 <body>
-    <h1>Report Rischio Idrico</h1>
-    <div class="report-section">
-        <h2>Oggi, <span id="data-oggi-report"></span></h2>
-        <p>Rischio Idrico: <span class="alert-display" id="allerta-oggi-idrico-display"></span> <span id="allerta-oggi-idrico-text"></span></p>
+    <h1>Allerta Meteo Comune di Tricarico</h1>
+
+    <div class="alert-container">
+        <h2>Oggi, <span id="data-oggi"></span></h2>
+        <div class="rischio-selector">
+            <label for="idrogeologico-oggi">Rischio Idrogeologico:</label>
+            <select id="idrogeologico-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrogeologico-oggi"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="temporali-oggi">Rischio Idrogeologico per Temporali:</label>
+            <select id="temporali-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-temporali-oggi"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="idrico-oggi">Rischio Idrico:</label>
+            <select id="idrico-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrico-oggi"></div>
+        </div>
     </div>
-    <div class="report-section">
-        <h2>Domani, <span id="data-domani-report"></span></h2>
-        <p>Rischio Idrico: <span class="alert-display" id="allerta-domani-idrico-display"></span> <span id="allerta-domani-idrico-text"></span></p>
+
+    <div class="alert-container">
+        <h2>Domani, <span id="data-domani"></span></h2>
+        <div class="rischio-selector">
+            <label for="idrogeologico-domani">Rischio Idrogeologico:</label>
+            <select id="idrogeologico-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrogeologico-domani"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="temporali-domani">Rischio Idrogeologico per Temporali:</label>
+            <select id="temporali-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-temporali-domani"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="idrico-domani">Rischio Idrico:</label>
+            <select id="idrico-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrico-domani"></div>
+        </div>
     </div>
-    <p id="timestamp-aggiornamento"></p>
+
+    <div id="button-container">
+        <button onclick="generaReport('idrogeologico')">Report Idrogeologico</button>
+        <button onclick="generaReport('temporali')">Report Idrogeologico per Temporali</button>
+        <button onclick="generaReport('idrico')">Report Idrico</button>
+        <button onclick="generaReport('complessivo')">Report Complessivo</button>
+    </div>
+
+    <div id="mappa-container">
+        <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
+        <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
+        <div id="color-overlay"></div>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const reportDataString = localStorage.getItem('reportData');
+        function formatDate(date) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('it-IT', options);
+        }
 
-            if (reportDataString) {
-                const reportData = JSON.parse(reportDataString);
+        const oggi = new Date();
+        const domani = new Date();
+        domani.setDate(oggi.getDate() + 1);
 
-                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
-                document.getElementById('data-domani-report').textContent = reportData.domani.data;
+        document.getElementById('data-oggi').textContent = formatDate(oggi);
+        document.getElementById('data-domani').textContent = formatDate(domani);
 
-                const allertaOggiDisplay = document.getElementById('allerta-oggi-idrico-display');
-                const allertaDomaniDisplay = document.getElementById('allerta-domani-idrico-display');
-                const allertaOggiText = document.getElementById('allerta-oggi-idrico-text');
-                const allertaDomaniText = document.getElementById('allerta-domani-idrico-text');
-                const timestampAggiornamento = document.getElementById('timestamp-aggiornamento');
+        function generaReport(tipoReport) {
+            const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+            const allertaOggiTemp = document.getElementById('temporali-oggi').value;
+            const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+            const allertaDomaniIdro = document.getElementById('idrogeologico-domani').value;
+            const allertaDomaniTemp = document.getElementById('temporali-domani').value;
+            const allertaDomaniIdrico = document.getElementById('idrico-domani').value;
+            const dataOggi = document.getElementById('data-oggi').textContent;
+            const dataDomani = document.getElementById('data-domani').textContent;
 
-                allertaOggiDisplay.className = `alert-display ${reportData.oggi.idrico}`;
-                allertaDomaniDisplay.className = `alert-display ${reportData.domani.idrico}`;
-                allertaOggiText.textContent = reportData.oggi.idrico.charAt(0).toUpperCase() + reportData.oggi.idrico.slice(1);
-                allertaDomaniText.textContent = reportData.domani.idrico.charAt(0).toUpperCase() + reportData.domani.idrico.slice(1);
+            const reportData = {
+                tipoReport: tipoReport,
+                oggi: {
+                    idrogeologico: allertaOggiIdro,
+                    temporali: allertaOggiTemp,
+                    idrico: allertaOggiIdrico,
+                    data: dataOggi
+                },
+                domani: {
+                    idrogeologico: allertaDomaniIdro,
+                    temporali: allertaDomaniTemp,
+                    idrico: allertaDomaniIdrico,
+                    data: dataDomani
+                }
+            };
 
-                // Aggiungi il timestamp
-                const now = new Date();
-                const giorno = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-                const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
-                timestampAggiornamento.textContent = `Aggiornato il ${giorno} alle ${ora}`;
+            // Salva i dati nel localStorage
+            localStorage.setItem('reportData', JSON.stringify(reportData));
 
-            } else {
-                document.body.innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
+            // Apri la pagina corretta in base al tipo di report
+            switch (tipoReport) {
+                case 'idrogeologico':
+                    window.open('idrogeologico.html', '_blank');
+                    break;
+                case 'temporali':
+                    window.open('temporali.html', '_blank');
+                    break;
+                case 'idrico':
+                    window.open('idrico.html', '_blank');
+                    break;
+                case 'complessivo':
+                    window.open('complessivo.html', '_blank');
+                    break;
+                default:
+                    window.open('complessivo.html', '_blank');
+                    break;
             }
+        }
+
+        function getAlertColor(livelloAllerta) {
+            switch (livelloAllerta) {
+                case 'verde':
+                    return 'transparent';
+                case 'giallo':
+                    return 'yellow';
+                case 'arancione':
+                    return 'orange';
+                case 'rosso':
+                    return 'red';
+                default:
+                    return 'transparent';
+            }
+        }
+
+        function aggiornaColoreMappa(livelloAllerta) {
+            const colorOverlay = document.getElementById('color-overlay');
+            colorOverlay.style.backgroundColor = getAlertColor(livelloAllerta);
+        }
+
+        // Aggiorna il colore della mappa iniziale (solo per il rischio idrogeologico oggi)
+        const initialAllertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+        aggiornaColoreMappa(initialAllertaOggiIdro);
+
+        // Aggiorna il colore della mappa quando cambia la selezione del rischio idrogeologico per oggi
+        document.getElementById('idrogeologico-oggi').addEventListener('change', function() {
+            aggiornaColoreMappa(this.value);
+        });
+
+        // Aggiorna le visualizzazioni (i quadratini colorati)
+        function aggiornaVisualizzazione() {
+            const rischiOggi = ['idrogeologico', 'temporali', 'idrico'];
+            const rischiDomani = ['idrogeologico', 'temporali', 'idrico'];
+
+            rischiOggi.forEach(rischio => {
+                const selezioneOggi = document.getElementById(`${rischio}-oggi`);
+                const visualizzazioneOggi = document.getElementById(`visualizzazione-${rischio}-oggi`);
+                visualizzazioneOggi.className = `alert-display ${selezioneOggi.value}`;
+            });
+
+            rischiDomani.forEach(rischio => {
+                const selezioneDomani = document.getElementById(`${rischio}-domani`);
+                const visualizzazioneDomani = document.getElementById(`visualizzazione-${rischio}-domani`);
+                visualizzazioneDomani.className = `alert-display ${selezioneDomani.value}`;
+            });
+        }
+
+        // Inizializza le visualizzazioni
+        aggiornaVisualizzazione();
+
+        // Aggiorna le visualizzazioni al cambio delle select
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', aggiornaVisualizzazione);
         });
     </script>
 </body>
