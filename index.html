@@ -8,7 +8,6 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px;
-            background-color: #f4f4f4;
             color: #333;
         }
         h1, h2 {
@@ -65,6 +64,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-top: 5px solid #3498db;
             text-align: center;
+            position: relative;
         }
         #tricarico-mappa-img {
             max-width: 100%;
@@ -92,6 +92,7 @@
             cursor: pointer;
             font-size: 1em;
             margin-right: 10px;
+            margin-bottom: 10px;
             transition: background-color 0.3s ease;
         }
         button:hover {
@@ -175,8 +176,10 @@
     </div>
 
     <div id="button-container">
-        <button onclick="generaReport('singolo')">Genera Report Singolo (Idrogeologico Oggi)</button>
-        <button onclick="generaReport('cumulativo')">Genera Report Cumulativo</button>
+        <button onclick="generaReport('idrogeologico')">Report Idrogeologico</button>
+        <button onclick="generaReport('temporali')">Report Idrogeologico per Temporali</button>
+        <button onclick="generaReport('idrico')">Report Idrico</button>
+        <button onclick="generaReport('complessivo')">Report Complessivo</button>
     </div>
 
     <div id="mappa-container">
@@ -227,8 +230,24 @@
             // Salva i dati nel localStorage
             localStorage.setItem('reportData', JSON.stringify(reportData));
 
-            // Apri la nuova pagina
-            window.open('allertetricarico.html', '_blank');
+            // Apri la pagina corretta in base al tipo di report
+            switch (tipoReport) {
+                case 'idrogeologico':
+                    window.open('idrogeologico.html', '_blank');
+                    break;
+                case 'temporali':
+                    window.open('temporali.html', '_blank');
+                    break;
+                case 'idrico':
+                    window.open('idrico.html', '_blank');
+                    break;
+                case 'complessivo':
+                    window.open('complessivo.html', '_blank');
+                    break;
+                default:
+                    window.open('complessivo.html', '_blank');
+                    break;
+            }
         }
 
         function getAlertColor(livelloAllerta) {
