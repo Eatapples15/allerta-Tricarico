@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Rischio Idrico - Tricarico</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .alert-display {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            vertical-align: middle;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .verde { background-color: #2ecc71; }
+        .giallo { background-color: #f1c40f; color: black; }
+        .arancione { background-color: #e67e22; color: white; }
+        .rosso { background-color: #c0392b; color: white; }
+        .report-section {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3498db;
+        }
+        #timestamp-aggiornamento {
+            margin-top: 15px;
+            font-size: 0.8em;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Report Rischio Idrico</h1>
+    <div class="report-section">
+        <h2>Oggi, <span id="data-oggi-report"></span></h2>
+        <p>Rischio Idrico: <span class="alert-display" id="allerta-oggi-idrico-display"></span> <span id="allerta-oggi-idrico-text"></span></p>
+    </div>
+    <div class="report-section">
+        <h2>Domani, <span id="data-domani-report"></span></h2>
+        <p>Rischio Idrico: <span class="alert-display" id="allerta-domani-idrico-display"></span> <span id="allerta-domani-idrico-text"></span></p>
+    </div>
+    <p id="timestamp-aggiornamento"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportDataString = localStorage.getItem('reportData');
+
+            if (reportDataString) {
+                const reportData = JSON.parse(reportDataString);
+
+                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
+                document.getElementById('data-domani-report').textContent = reportData.domani.data;
+
+                const allertaOggiDisplay = document.getElementById('allerta-oggi-idrico-display');
+                const allertaDomaniDisplay = document.getElementById('allerta-domani-idrico-display');
+                const allertaOggiText = document.getElementById('allerta-oggi-idrico-text');
+                const allertaDomaniText = document.getElementById('allerta-domani-idrico-text');
+                const timestampAggiornamento = document.getElementById('timestamp-aggiornamento');
+
+                allertaOggiDisplay.className = `alert-display ${reportData.oggi.idrico}`;
+                allertaDomaniDisplay.className = `alert-display ${reportData.domani.idrico}`;
+                allertaOggiText.textContent = reportData.oggi.idrico.charAt(0).toUpperCase() + reportData.oggi.idrico.slice(1);
+                allertaDomaniText.textContent = reportData.domani.idrico.charAt(0).toUpperCase() + reportData.domani.idrico.slice(1);
+
+                // Aggiungi il timestamp
+                const now = new Date();
+                const giorno = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+                const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
+                timestampAggiornamento.textContent = `Aggiornato il ${giorno} alle ${ora}`;
+
+            } else {
+                document.body.innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
