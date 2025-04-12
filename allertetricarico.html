@@ -6,7 +6,15 @@
     <title>Report Allerta Meteo Tricarico</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .alert-display {
             width: 25px;
@@ -15,84 +23,22 @@
             display: inline-block;
             margin-right: 5px;
             vertical-align: middle;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .verde { background-color: green; }
-        .giallo { background-color: yellow; color: black; }
-        .arancione { background-color: orange; }
-        .rosso { background-color: red; }
+        .verde { background-color: #2ecc71; }
+        .giallo { background-color: #f1c40f; color: black; }
+        .arancione { background-color: #e67e22; color: white; }
+        .rosso { background-color: #c0392b; color: white; }
 
         #mappa-container-report {
-            margin-top: 20px;
-            border: 1px solid #eee;
-            padding: 10px;
-            position: relative;
-            width: 600px;
-            height: auto;
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #3498db;
+            text-align: center;
+            position: relative; /* Importante per l'overlay */
         }
-
         #tricarico-mappa-report-img {
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-        #color-overlay-report {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.5;
-            background-color: transparent;
-        }
-
-        #timestamp-aggiornamento {
-            margin-top: 15px;
-            font-size: 0.8em;
-            color: #777;
-        }
-
-        .report-section {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #f0f0f0;
-            background-color: #fafafa;
-        }
-    </style>
-</head>
-<body>
-    <h1>Report Allerta Meteo Comune di Tricarico</h1>
-
-    <div id="report-container">
-        <h2>Riepilogo Allerta</h2>
-        <div id="report-oggi" class="report-section">
-            <h3>Oggi, <span id="data-oggi-report"></span></h3>
-            <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-oggi-idrogeologico-display"></span> <span id="allerta-oggi-idrogeologico-text"></span></p>
-            <p>Rischio Idrogeologico per Temporali: <span class="alert-display" id="allerta-oggi-temporali-display"></span> <span id="allerta-oggi-temporali-text"></span></p>
-            <p>Rischio Idrico: <span class="alert-display" id="allerta-oggi-idrico-display"></span> <span id="allerta-oggi-idrico-text"></span></p>
-        </div>
-        <div id="report-domani" class="report-section">
-            <h3>Domani, <span id="data-domani-report"></span></h3>
-            <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-domani-idrogeologico-display"></span> <span id="allerta-domani-idrogeologico-text"></span></p>
-            <p>Rischio Idrogeologico per Temporali: <span class="alert-display" id="allerta-domani-temporali-display"></span> <span id="allerta-domani-temporali-text"></span></p>
-            <p>Rischio Idrico: <span class="alert-display" id="allerta-domani-idrico-display"></span> <span id="allerta-domani-idrico-text"></span></p>
-        </div>
-    </div>
-
-    <div id="mappa-container-report">
-        <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
-        <img id="tricarico-mappa-report-img" src="tricarico.svg" alt="Mappa di Tricarico">
-        <div id="color-overlay-report"></div>
-    </div>
-
-    <p id="timestamp-aggiornamento"></p>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const reportDataString = localStorage.getItem('reportData');
-
-            if (reportDataString) {
-                const reportData = JSON.parse(reportDataString);
-
-                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
+            max-
