@@ -5,102 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Allerta Meteo Tricarico</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            color: #333;
-        }
-        h1, h2 {
-            color: #2c3e50;
+        /* ... (Stili CSS esistenti) ... */
+        #mappe-button-container {
             text-align: center;
-            margin-bottom: 20px;
-        }
-        .alert-container {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #3498db;
-        }
-        .rischio-selector {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .rischio-selector label {
-            margin-right: 15px;
-            flex-basis: 250px;
-            text-align: right;
-            font-weight: bold;
-            color: #555;
-        }
-        .rischio-selector select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            flex-grow: 1;
-            font-size: 1em;
-        }
-        .alert-display {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-left: 15px;
-            vertical-align: middle;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .verde { background-color: #2ecc71; }
-        .giallo { background-color: #f1c40f; color: black; }
-        .arancione { background-color: #e67e22; color: white; }
-        .rosso { background-color: #c0392b; color: white; }
-
-        #mappa-container {
             margin-top: 30px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-top: 5px solid #3498db;
-            text-align: center;
-            position: relative;
+            margin-bottom: 30px;
         }
-        #tricarico-mappa-img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-        }
-        #color-overlay {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            width: calc(100% - 40px);
-            height: calc(100% - 40px);
-            pointer-events: none;
-            opacity: 0.5;
-            background-color: transparent;
-            border-radius: 8px;
-        }
-        button {
-            background-color: #3498db;
+        #mappe-button-container button {
+            background-color: #27ae60; /* Verde scuro */
             color: white;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1em;
-            margin-right: 10px;
-            margin-bottom: 10px;
+            font-size: 0.9em;
+            margin-right: 5px;
             transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #2980b9;
-        }
-        #button-container {
-            text-align: center;
-            margin-bottom: 30px;
+        #mappe-button-container button:hover {
+            background-color: #1e8449;
         }
     </style>
 </head>
@@ -169,7 +92,6 @@
                 <option value="verde">Verde - assente</option>
                 <option value="giallo">Giallo - ordinaria</option>
                 <option value="arancione">Arancione - moderata</option>
-                <option value="rosso">Rosso - Elevata</option>
             </select>
             <div class="alert-display" id="visualizzazione-idrico-domani"></div>
         </div>
@@ -177,7 +99,7 @@
 
     <div id="button-container">
         <button onclick="generaReport('idrogeologico')">Report Idrogeologico</button>
-        <button onclick="generaReport('temporali')">Report Idrogeologico per Temporali</button>
+        <button onclick="generaReport('temporali')">Report Temporali</button>
         <button onclick="generaReport('idrico')">Report Idrico</button>
         <button onclick="generaReport('complessivo')">Report Complessivo</button>
     </div>
@@ -186,6 +108,12 @@
         <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
         <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
         <div id="color-overlay"></div>
+    </div>
+
+    <div id="mappe-button-container">
+        <button onclick="generaMappa('idrogeologico')">Mappa Idrogeologico (Oggi)</button>
+        <button onclick="generaMappa('temporali')">Mappa Temporali (Oggi)</button>
+        <button onclick="generaMappa('idrico')">Mappa Idrico (Oggi)</button>
     </div>
 
     <script>
@@ -224,6 +152,11 @@
                     temporali: allertaDomaniTemp,
                     idrico: allertaDomaniIdrico,
                     data: dataDomani
+                },
+                mappaOggi: {
+                    idrogeologico: allertaOggiIdro,
+                    temporali: allertaOggiTemp,
+                    idrico: allertaOggiIdrico
                 }
             };
 
@@ -248,6 +181,34 @@
                     window.open('allertetricarico.html', '_blank');
                     break;
             }
+        }
+
+        function generaMappa(rischio) {
+            const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+            const allertaOggiTemp = document.getElementById('temporali-oggi').value;
+            const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+
+            let livelloAllerta = 'verde'; // Default
+
+            switch (rischio) {
+                case 'idrogeologico':
+                    livelloAllerta = allertaOggiIdro;
+                    break;
+                case 'temporali':
+                    livelloAllerta = allertaOggiTemp;
+                    break;
+                case 'idrico':
+                    livelloAllerta = allertaOggiIdrico;
+                    break;
+            }
+
+            const mappaData = {
+                livelloAllerta: livelloAllerta,
+                rischio: rischio
+            };
+
+            localStorage.setItem('mappaData', JSON.stringify(mappaData));
+            window.open('mappeallerte.html', '_blank');
         }
 
         function getAlertColor(livelloAllerta) {
