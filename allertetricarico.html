@@ -9,11 +9,11 @@
             font-family: sans-serif;
         }
         .alert-display {
-            width: 50px;
-            height: 50px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             display: inline-block;
-            margin-right: 10px;
+            margin-right: 5px;
             vertical-align: middle;
         }
         .verde { background-color: green; }
@@ -21,22 +21,22 @@
         .arancione { background-color: orange; }
         .rosso { background-color: red; }
 
-        #mappa-container-report { /* ID specifico per questa pagina */
+        #mappa-container-report {
             margin-top: 20px;
             border: 1px solid #eee;
             padding: 10px;
             position: relative;
-            width: 600px; /* Imposta una larghezza */
+            width: 600px;
             height: auto;
         }
 
-        #tricarico-mappa-report-img { /* Manteniamo questo ID */
+        #tricarico-mappa-report-img {
             display: block;
             width: 100%;
             height: auto;
         }
 
-        #color-overlay-report { /* Manteniamo questo ID */
+        #color-overlay-report {
             position: absolute;
             top: 0;
             left: 0;
@@ -52,6 +52,13 @@
             font-size: 0.8em;
             color: #777;
         }
+
+        .report-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #f0f0f0;
+            background-color: #fafafa;
+        }
     </style>
 </head>
 <body>
@@ -59,12 +66,22 @@
 
     <div id="report-container">
         <h2>Riepilogo Allerta</h2>
-        <p><strong>Oggi, <span id="data-oggi-report"></span>:</strong> Allerta <span class="alert-display" id="allerta-oggi-report-display"></span> <span id="allerta-oggi-report-text"></span></p>
-        <p><strong>Domani, <span id="data-domani-report"></span>:</strong> Allerta <span class="alert-display" id="allerta-domani-report-display"></span> <span id="allerta-domani-report-text"></span></p>
+        <div id="report-oggi" class="report-section">
+            <h3>Oggi, <span id="data-oggi-report"></span></h3>
+            <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-oggi-idrogeologico-display"></span> <span id="allerta-oggi-idrogeologico-text"></span></p>
+            <p>Rischio Idrogeologico per Temporali: <span class="alert-display" id="allerta-oggi-temporali-display"></span> <span id="allerta-oggi-temporali-text"></span></p>
+            <p>Rischio Idrico: <span class="alert-display" id="allerta-oggi-idrico-display"></span> <span id="allerta-oggi-idrico-text"></span></p>
+        </div>
+        <div id="report-domani" class="report-section">
+            <h3>Domani, <span id="data-domani-report"></span></h3>
+            <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-domani-idrogeologico-display"></span> <span id="allerta-domani-idrogeologico-text"></span></p>
+            <p>Rischio Idrogeologico per Temporali: <span class="alert-display" id="allerta-domani-temporali-display"></span> <span id="allerta-domani-temporali-text"></span></p>
+            <p>Rischio Idrico: <span class="alert-display" id="allerta-domani-idrico-display"></span> <span id="allerta-domani-idrico-text"></span></p>
+        </div>
     </div>
 
     <div id="mappa-container-report">
-        <h2>Mappa di Tricarico (Allerta Oggi)</h2>
+        <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
         <img id="tricarico-mappa-report-img" src="tricarico.svg" alt="Mappa di Tricarico">
         <div id="color-overlay-report"></div>
     </div>
@@ -78,53 +95,4 @@
             if (reportDataString) {
                 const reportData = JSON.parse(reportDataString);
 
-                document.getElementById('data-oggi-report').textContent = reportData.dataOggi;
-                document.getElementById('data-domani-report').textContent = reportData.dataDomani;
-
-                const allertaOggiDisplay = document.getElementById('allerta-oggi-report-display');
-                const allertaDomaniDisplay = document.getElementById('allerta-domani-report-display');
-                const allertaOggiText = document.getElementById('allerta-oggi-report-text');
-                const allertaDomaniText = document.getElementById('allerta-domani-report-text');
-                const colorOverlayReport = document.getElementById('color-overlay-report');
-                const timestampAggiornamento = document.getElementById('timestamp-aggiornamento');
-                const mappaContainerReport = document.getElementById('mappa-container-report'); // Ottieni il contenitore
-
-                allertaOggiDisplay.className = `alert-display ${reportData.allertaOggi}`;
-                allertaDomaniDisplay.className = `alert-display ${reportData.allertaDomani}`;
-                allertaOggiText.textContent = reportData.allertaOggi.charAt(0).toUpperCase() + reportData.allertaOggi.slice(1);
-                allertaDomaniText.textContent = reportData.allertaDomani.charAt(0).toUpperCase() + reportData.allertaDomani.slice(1);
-
-                colorOverlayReport.style.backgroundColor = getAlertColor(reportData.allertaOggi);
-
-                // Aggiungi il timestamp
-                const now = new Date();
-                const giorno = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
-                const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
-                timestampAggiornamento.textContent = `Aggiornato il ${giorno} alle ${ora}`;
-
-                // Assicurati che il contenitore della mappa sia visibile
-                mappaContainerReport.style.display = 'block';
-
-            } else {
-                document.getElementById('report-container').innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
-                document.getElementById('mappa-container-report').style.display = 'none'; // Usa l'ID corretto
-            }
-        });
-
-        function getAlertColor(livelloAllerta) {
-            switch (livelloAllerta) {
-                case 'verde':
-                    return 'transparent';
-                case 'giallo':
-                    return 'yellow';
-                case 'arancione':
-                    return 'orange';
-                case 'rosso':
-                    return 'red';
-                default:
-                    return 'transparent';
-            }
-        }
-    </script>
-</body>
-</html>
+                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
