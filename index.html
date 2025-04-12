@@ -58,30 +58,34 @@
 
         #mappa-container {
             margin-top: 30px;
-            background-color: #fff;
+            background-color: white; /* Imposta uno sfondo bianco di default */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-top: 5px solid #3498db;
             text-align: center;
             position: relative;
+            overflow: hidden; /* Importante per contenere l'overlay */
         }
         #tricarico-mappa-img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 10px auto;
+            position: relative; /* Assicura che sia sopra l'overlay */
+            z-index: 1;
         }
         #color-overlay {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            width: calc(100% - 40px);
-            height: calc(100% - 40px);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             opacity: 0.5;
-            background-color: transparent;
+            background-color: transparent; /* Inizializza come trasparente */
             border-radius: 8px;
+            z-index: 0; /* Assicura che sia sotto l'immagine */
         }
         button {
             background-color: #3498db;
@@ -101,6 +105,25 @@
         #button-container {
             text-align: center;
             margin-bottom: 30px;
+        }
+        #mappe-button-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        #mappe-button-container button {
+            background-color: #27ae60; /* Verde scuro */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+        #mappe-button-container button:hover {
+            background-color: #1e8449;
         }
     </style>
 </head>
@@ -188,6 +211,12 @@
         <div id="color-overlay"></div>
     </div>
 
+    <div id="mappe-button-container">
+        <button onclick="generaMappa('idrogeologico')">Mappa Idrogeologico (Oggi)</button>
+        <button onclick="generaMappa('temporali')">Mappa Temporali (Oggi)</button>
+        <button onclick="generaMappa('idrico')">Mappa Idrico (Oggi)</button>
+    </div>
+
     <script>
         function formatDate(date) {
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -224,6 +253,11 @@
                     temporali: allertaDomaniTemp,
                     idrico: allertaDomaniIdrico,
                     data: dataDomani
+                },
+                mappaOggi: {
+                    idrogeologico: allertaOggiIdro,
+                    temporali: allertaOggiTemp,
+                    idrico: allertaOggiIdrico
                 }
             };
 
@@ -242,18 +276,46 @@
                     window.open('idrico.html', '_blank');
                     break;
                 case 'complessivo':
-                    window.open('complessivo.html', '_blank');
+                    window.open('allertetricarico.html', '_blank');
                     break;
                 default:
-                    window.open('complessivo.html', '_blank');
+                    window.open('allertetricarico.html', '_blank');
                     break;
             }
+        }
+
+        function generaMappa(rischio) {
+            const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+            const allertaOggiTemp = document.getElementById('temporali-oggi').value;
+            const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+
+            let livelloAllerta = 'verde'; // Default
+
+            switch (rischio) {
+                case 'idrogeologico':
+                    livelloAllerta = allertaOggiIdro;
+                    break;
+                case 'temporali':
+                    livelloAllerta = allertaOggiTemp;
+                    break;
+                case 'idrico':
+                    livelloAllerta = allertaOggiIdrico;
+                    break;
+            }
+
+            const mappaData = {
+                livelloAllerta: livelloAllerta,
+                rischio: rischio
+            };
+
+            localStorage.setItem('mappaData', JSON.stringify(mappaData));
+            window.open('mappeallerte.html', '_blank');
         }
 
         function getAlertColor(livelloAllerta) {
             switch (livelloAllerta) {
                 case 'verde':
-                    return 'transparent';
+                    return '#2ecc71';
                 case 'giallo':
                     return 'yellow';
                 case 'arancione':
@@ -270,12 +332,20 @@
             colorOverlay.style.backgroundColor = getAlertColor(livelloAllerta);
         }
 
-        // Aggiorna il colore della mappa iniziale (solo per il rischio idrogeologico oggi)
+        // Aggiorna il colore della mappa iniziale
         const initialAllertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
         aggiornaColoreMappa(initialAllertaOggiIdro);
 
-        // Aggiorna il colore della mappa quando cambia la selezione del rischio idrogeologico per oggi
+        // Aggiorna il colore della mappa quando cambia la selezione
         document.getElementById('idrogeologico-oggi').addEventListener('change', function() {
+            aggiornaColoreMappa(this.value);
+        });
+
+        document.getElementById('temporali-oggi').addEventListener('change', function() {
+            aggiornaColoreMappa(this.value);
+        });
+
+        document.getElementById('idrico-oggi').addEventListener('change', function() {
             aggiornaColoreMappa(this.value);
         });
 
