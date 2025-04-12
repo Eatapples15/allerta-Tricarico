@@ -3,42 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Allerta Meteo Tricarico</title>
+    <title>Report Allerta Meteo Tricarico - Complessivo</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 20px;
-            background-color: #f4f4f4;
             color: #333;
+            background-color: #f4f4f4;
         }
         h1, h2, h3 {
             color: #2c3e50;
             text-align: center;
             margin-bottom: 20px;
         }
-        .alert-display {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
+        .alert-level {
             display: inline-block;
-            margin-right: 5px;
-            vertical-align: middle;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            width: 80px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
         }
         .verde { background-color: #2ecc71; }
         .giallo { background-color: #f1c40f; color: black; }
-        .arancione { background-color: #e67e22; color: white; }
-        .rosso { background-color: #c0392b; color: white; }
-
-        #mappa-container-report {
-            margin-top: 30px;
+        .arancione { background-color: #e67e22; }
+        .rosso { background-color: #c0392b; }
+        .report-section {
             background-color: #fff;
             padding: 20px;
+            margin-bottom: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-top: 5px solid #3498db;
-            text-align: center;
-            position: relative; /* Importante per l'overlay */
+            border-left: 5px solid #3498db;
         }
-        #tricarico-mappa-report-img {
-            max-
+        .rischio-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .rischio-row:last-child {
+            border-bottom: none;
+        }
+        .rischio-label {
+            font-weight: bold;
+            flex-basis: 40%;
+        }
+        .rischio-value {
+            flex-basis: 30%;
+            text-align: center;
+        }
+        #timestamp-aggiornamento {
+            margin-top: 15px;
+            font-size: 0.8em;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Report Complessivo Allerta Meteo Tricarico</h1>
+
+    <div class="report-section">
+        <h2>Oggi, <span id="data-oggi-report"></span></h2>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Idrogeologico:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-oggi-idrogeologico"></span></span>
+        </div>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Temporali:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-oggi-temporali"></span></span>
+        </div>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Idrico:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-oggi-idrico"></span></span>
+        </div>
+    </div>
+
+    <div class="report-section">
+        <h2>Domani, <span id="data-domani-report"></span></h2>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Idrogeologico:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-domani-idrogeologico"></span></span>
+        </div>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Temporali:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-domani-temporali"></span></span>
+        </div>
+        <div class="rischio-row">
+            <span class="rischio-label">Rischio Idrico:</span>
+            <span class="rischio-value"><span class="alert-level" id="allerta-domani-idrico"></span></span>
+        </div>
+    </div>
+
+    <p id="timestamp-aggiornamento"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportDataString = localStorage.getItem('reportData');
+
+            if (reportDataString) {
+                const reportData = JSON.parse(reportDataString);
+
+                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
+                document.getElementById('data-domani-report').textContent = reportData.domani.data;
+
+                // Oggi
+                document.getElementById('allerta-oggi-idrogeologico').textContent = reportData.oggi.idrogeologico.charAt(0).toUpperCase();
+                document.getElementById('allerta-oggi-idrogeologico').className = `alert-level ${reportData.oggi.idrogeologico}`;
+
+                document.getElementById('allerta-oggi-temporali').textContent = reportData.oggi.temporali.charAt(0).toUpperCase();
+                document.getElementById('allerta-oggi-temporali').className = `alert-level ${reportData.oggi.temporali}`;
+
+                document.getElementById('allerta-oggi-idrico').textContent = reportData.oggi.idrico.charAt(0).toUpperCase();
+                document.getElementById('allerta-oggi-idrico').className = `alert-level ${reportData.oggi.idrico}`;
+
+                // Domani
+                document.getElementById('allerta-domani-idrogeologico').textContent = reportData.domani.idrogeologico.charAt(0).toUpperCase();
+                document.getElementById('allerta-domani-idrogeologico').className = `alert-level ${reportData.domani.idrogeologico}`;
+
+                document.getElementById('allerta-domani-temporali').textContent = reportData.domani.temporali.charAt(0).toUpperCase();
+                document.getElementById('allerta-domani-temporali').className = `alert-level ${reportData.domani.temporali}`;
+
+                document.getElementById('allerta-domani-idrico').textContent = reportData.domani.idrico.charAt(0).toUpperCase();
+                document.getElementById('allerta-domani-idrico').className = `alert-level ${reportData.domani.idrico}`;
+
+                // Aggiungi il timestamp
+                const now = new Date();
+                const giorno = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+                const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
+                document.getElementById('timestamp-aggiornamento').textContent = `Aggiornato il ${giorno} alle ${ora}`;
+
+            } else {
+                document.body.innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
