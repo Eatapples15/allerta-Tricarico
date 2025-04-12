@@ -6,54 +6,100 @@
     <title>Allerta Meteo Tricarico</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .alert-container {
+            background-color: #fff;
+            padding: 20px;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
-            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #3498db;
+        }
+        .rischio-selector {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .rischio-selector label {
+            margin-right: 15px;
+            flex-basis: 250px;
+            text-align: right;
+            font-weight: bold;
+            color: #555;
+        }
+        .rischio-selector select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+            font-size: 1em;
         }
         .alert-display {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: inline-block;
-            margin-left: 10px;
+            margin-left: 15px;
             vertical-align: middle;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        .verde { background-color: green; }
-        .giallo { background-color: yellow; color: black; }
-        .arancione { background-color: orange; }
-        .rosso { background-color: red; }
+        .verde { background-color: #2ecc71; }
+        .giallo { background-color: #f1c40f; color: black; }
+        .arancione { background-color: #e67e22; color: white; }
+        .rosso { background-color: #c0392b; color: white; }
 
         #mappa-container {
-            margin-top: 20px;
-            border: 1px solid #eee;
-            padding: 10px;
-            position: relative;
-            width: 600px; /* Imposta una larghezza */
-            height: auto;
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #3498db;
+            text-align: center;
         }
-
         #tricarico-mappa-img {
-            display: block;
-            width: 100%;
+            max-width: 100%;
             height: auto;
+            display: block;
+            margin: 10px auto;
         }
-
         #color-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 20px;
+            left: 20px;
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
             pointer-events: none;
             opacity: 0.5;
             background-color: transparent;
+            border-radius: 8px;
         }
-
-        .rischio-selector {
-            margin-bottom: 10px;
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #button-container {
+            text-align: center;
+            margin-bottom: 30px;
         }
     </style>
 </head>
@@ -128,8 +174,10 @@
         </div>
     </div>
 
-    <button onclick="generaReport('singolo')">Genera Report Singolo (Idrogeologico Oggi)</button>
-    <button onclick="generaReport('cumulativo')">Genera Report Cumulativo</button>
+    <div id="button-container">
+        <button onclick="generaReport('singolo')">Genera Report Singolo (Idrogeologico Oggi)</button>
+        <button onclick="generaReport('cumulativo')">Genera Report Cumulativo</button>
+    </div>
 
     <div id="mappa-container">
         <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
