@@ -51,6 +51,10 @@
             opacity: 0.5;
             background-color: transparent;
         }
+
+        .rischio-selector {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -58,32 +62,77 @@
 
     <div class="alert-container">
         <h2>Oggi, <span id="data-oggi"></span></h2>
-        <label for="allerta-oggi">Seleziona il livello di allerta:</label>
-        <select id="allerta-oggi">
-            <option value="verde">Verde - assente</option>
-            <option value="giallo">Giallo - ordinaria</option>
-            <option value="arancione">Arancione - moderata</option>
-            <option value="rosso">Rosso - Elevata</option>
-        </select>
-        <div class="alert-display" id="visualizzazione-oggi"></div>
+        <div class="rischio-selector">
+            <label for="idrogeologico-oggi">Rischio Idrogeologico:</label>
+            <select id="idrogeologico-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrogeologico-oggi"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="temporali-oggi">Rischio Idrogeologico per Temporali:</label>
+            <select id="temporali-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-temporali-oggi"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="idrico-oggi">Rischio Idrico:</label>
+            <select id="idrico-oggi">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrico-oggi"></div>
+        </div>
     </div>
 
     <div class="alert-container">
         <h2>Domani, <span id="data-domani"></span></h2>
-        <label for="allerta-domani">Seleziona il livello di allerta:</label>
-        <select id="allerta-domani">
-            <option value="verde">Verde - assente</option>
-            <option value="giallo">Giallo - ordinaria</option>
-            <option value="arancione">Arancione - moderata</option>
-            <option value="rosso">Rosso - Elevata</option>
-        </select>
-        <div class="alert-display" id="visualizzazione-domani"></div>
+        <div class="rischio-selector">
+            <label for="idrogeologico-domani">Rischio Idrogeologico:</label>
+            <select id="idrogeologico-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrogeologico-domani"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="temporali-domani">Rischio Idrogeologico per Temporali:</label>
+            <select id="temporali-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-temporali-domani"></div>
+        </div>
+        <div class="rischio-selector">
+            <label for="idrico-domani">Rischio Idrico:</label>
+            <select id="idrico-domani">
+                <option value="verde">Verde - assente</option>
+                <option value="giallo">Giallo - ordinaria</option>
+                <option value="arancione">Arancione - moderata</option>
+                <option value="rosso">Rosso - Elevata</option>
+            </select>
+            <div class="alert-display" id="visualizzazione-idrico-domani"></div>
+        </div>
     </div>
 
-    <button onclick="generaReport()">Genera Report</button>
+    <button onclick="generaReport('singolo')">Genera Report Singolo (Idrogeologico Oggi)</button>
+    <button onclick="generaReport('cumulativo')">Genera Report Cumulativo</button>
 
     <div id="mappa-container">
-        <h2>Mappa di Tricarico</h2>
+        <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
         <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
         <div id="color-overlay"></div>
     </div>
@@ -101,20 +150,33 @@
         document.getElementById('data-oggi').textContent = formatDate(oggi);
         document.getElementById('data-domani').textContent = formatDate(domani);
 
-        function generaReport() {
-            const allertaOggi = document.getElementById('allerta-oggi').value;
-            const allertaDomani = document.getElementById('allerta-domani').value;
+        function generaReport(tipoReport) {
+            const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+            const allertaOggiTemp = document.getElementById('temporali-oggi').value;
+            const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+            const allertaDomaniIdro = document.getElementById('idrogeologico-domani').value;
+            const allertaDomaniTemp = document.getElementById('temporali-domani').value;
+            const allertaDomaniIdrico = document.getElementById('idrico-domani').value;
             const dataOggi = document.getElementById('data-oggi').textContent;
             const dataDomani = document.getElementById('data-domani').textContent;
 
             const reportData = {
-                allertaOggi: allertaOggi,
-                allertaDomani: allertaDomani,
-                dataOggi: dataOggi,
-                dataDomani: dataDomani
+                tipoReport: tipoReport,
+                oggi: {
+                    idrogeologico: allertaOggiIdro,
+                    temporali: allertaOggiTemp,
+                    idrico: allertaOggiIdrico,
+                    data: dataOggi
+                },
+                domani: {
+                    idrogeologico: allertaDomaniIdro,
+                    temporali: allertaDomaniTemp,
+                    idrico: allertaDomaniIdrico,
+                    data: dataDomani
+                }
             };
 
-            // Salva i dati nel localStorage per passarli all'altra pagina
+            // Salva i dati nel localStorage
             localStorage.setItem('reportData', JSON.stringify(reportData));
 
             // Apri la nuova pagina
@@ -141,13 +203,39 @@
             colorOverlay.style.backgroundColor = getAlertColor(livelloAllerta);
         }
 
-        // Aggiorna il colore della mappa iniziale
-        const initialAllertaOggi = document.getElementById('allerta-oggi').value;
-        aggiornaColoreMappa(initialAllertaOggi);
+        // Aggiorna il colore della mappa iniziale (solo per il rischio idrogeologico oggi)
+        const initialAllertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+        aggiornaColoreMappa(initialAllertaOggiIdro);
 
-        // Aggiorna il colore della mappa quando cambia la selezione "Oggi"
-        document.getElementById('allerta-oggi').addEventListener('change', function() {
+        // Aggiorna il colore della mappa quando cambia la selezione del rischio idrogeologico per oggi
+        document.getElementById('idrogeologico-oggi').addEventListener('change', function() {
             aggiornaColoreMappa(this.value);
+        });
+
+        // Aggiorna le visualizzazioni (i quadratini colorati)
+        function aggiornaVisualizzazione() {
+            const rischiOggi = ['idrogeologico', 'temporali', 'idrico'];
+            const rischiDomani = ['idrogeologico', 'temporali', 'idrico'];
+
+            rischiOggi.forEach(rischio => {
+                const selezioneOggi = document.getElementById(`${rischio}-oggi`);
+                const visualizzazioneOggi = document.getElementById(`visualizzazione-${rischio}-oggi`);
+                visualizzazioneOggi.className = `alert-display ${selezioneOggi.value}`;
+            });
+
+            rischiDomani.forEach(rischio => {
+                const selezioneDomani = document.getElementById(`${rischio}-domani`);
+                const visualizzazioneDomani = document.getElementById(`visualizzazione-${rischio}-domani`);
+                visualizzazioneDomani.className = `alert-display ${selezioneDomani.value}`;
+            });
+        }
+
+        // Inizializza le visualizzazioni
+        aggiornaVisualizzazione();
+
+        // Aggiorna le visualizzazioni al cambio delle select
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', aggiornaVisualizzazione);
         });
     </script>
 </body>
