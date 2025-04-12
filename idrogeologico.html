@@ -49,4 +49,45 @@
     <h1>Report Rischio Idrogeologico</h1>
     <div class="report-section">
         <h2>Oggi, <span id="data-oggi-report"></span></h2>
-        <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-oggi-id
+        <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-oggi-idrogeologico-display"></span> <span id="allerta-oggi-idrogeologico-text"></span></p>
+    </div>
+    <div class="report-section">
+        <h2>Domani, <span id="data-domani-report"></span></h2>
+        <p>Rischio Idrogeologico: <span class="alert-display" id="allerta-domani-idrogeologico-display"></span> <span id="allerta-domani-idrogeologico-text"></span></p>
+    </div>
+    <p id="timestamp-aggiornamento"></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportDataString = localStorage.getItem('reportData');
+
+            if (reportDataString) {
+                const reportData = JSON.parse(reportDataString);
+
+                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
+                document.getElementById('data-domani-report').textContent = reportData.domani.data;
+
+                const allertaOggiDisplay = document.getElementById('allerta-oggi-idrogeologico-display');
+                const allertaDomaniDisplay = document.getElementById('allerta-domani-idrogeologico-display');
+                const allertaOggiText = document.getElementById('allerta-oggi-idrogeologico-text');
+                const allertaDomaniText = document.getElementById('allerta-domani-idrogeologico-text');
+                const timestampAggiornamento = document.getElementById('timestamp-aggiornamento');
+
+                allertaOggiDisplay.className = `alert-display ${reportData.oggi.idrogeologico}`;
+                allertaDomaniDisplay.className = `alert-display ${reportData.domani.idrogeologico}`;
+                allertaOggiText.textContent = reportData.oggi.idrogeologico.charAt(0).toUpperCase() + reportData.oggi.idrogeologico.slice(1);
+                allertaDomaniText.textContent = reportData.domani.idrogeologico.charAt(0).toUpperCase() + reportData.domani.idrogeologico.slice(1);
+
+                // Aggiungi il timestamp
+                const now = new Date();
+                const giorno = now.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+                const ora = now.toLocaleTimeString('it-IT', { hour: 'numeric', minute: 'numeric' });
+                timestampAggiornamento.textContent = `Aggiornato il ${giorno} alle ${ora}`;
+
+            } else {
+                document.body.innerHTML = '<p>Nessun dato di allerta disponibile.</p>';
+            }
+        });
+    </script>
+</body>
+</html>
