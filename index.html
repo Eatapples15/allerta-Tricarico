@@ -212,61 +212,59 @@
 
         document.getElementById('data-oggi').textContent = formatDate(oggi);
         document.getElementById('data-domani').textContent = formatDate(domani);
+function generaReport(tipoReport) {
+    const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
+    const allertaOggiTemp = document.getElementById('temporali-oggi').value;
+    const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+    const allertaDomaniIdro = document.getElementById('idrogeologico-domani').value;
+    const allertaDomaniTemp = document.getElementById('temporali-domani').value;
+    const allertaDomaniIdrico = document.getElementById('idrico-domani').value;
+    const dataOggi = document.getElementById('data-oggi').textContent;
+    const dataDomani = document.getElementById('data-domani').textContent;
 
-        function generaReport(tipoReport) {
-            const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
-            const allertaOggiTemp = document.getElementById('temporali-oggi').value;
-            const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
-            const allertaDomaniIdro = document.getElementById('idrogeologico-domani').value;
-            const allertaDomaniTemp = document.getElementById('temporali-domani').value;
-            const allertaDomaniIdrico = document.getElementById('idrico-domani').value;
-            const dataOggi = document.getElementById('data-oggi').textContent;
-            const dataDomani = document.getElementById('data-domani').textContent;
-
-            const reportData = {
-                tipoReport: tipoReport,
-                oggi: {
-                    idrogeologico: allertaOggiIdro,
-                    temporali: allertaOggiTemp,
-                    idrico: allertaOggiIdrico,
-                    data: dataOggi
-                },
-                domani: {
-                    idrogeologico: allertaDomaniIdro,
-                    temporali: allertaDomaniTemp,
-                    idrico: allertaDomaniIdrico,
-                    data: dataDomani
-                },
-                mappaOggi: {
-                    idrogeologico: allertaOggiIdro,
-                    temporali: allertaOggiTemp,
-                    idrico: allertaOggiIdrico
-                }
-            };
-
-            localStorage.setItem('reportData', JSON.stringify(reportData));
-
-            let reportURL = '';
-            switch (tipoReport) {
-                case 'idrogeologico':
-                    reportURL = 'idrogeologico.html';
-                    break;
-                case 'temporali':
-                    reportURL = 'temporali.html';
-                    break;
-                case 'idrico':
-                    reportURL = 'idrico.html';
-                    break;
-                case 'complessivo':
-                    reportURL = 'allertetricarico.html';
-                    break;
-                default:
-                    reportURL = 'allertetricarico.html';
-                    break;
-            }
-            window.open(reportURL, '_blank');
+    const reportData = {
+        tipoReport: tipoReport,
+        oggi: {
+            idrogeologico: allertaOggiIdro,
+            temporali: allertaOggiTemp,
+            idrico: allertaOggiIdrico,
+            data: dataOggi
+        },
+        domani: {
+            idrogeologico: allertaDomaniIdro,
+            temporali: allertaDomaniTemp,
+            idrico: allertaDomaniIdrico,
+            data: dataDomani
+        },
+        mappaOggi: {
+            idrogeologico: allertaOggiIdro,
+            temporali: allertaOggiTemp,
+            idrico: allertaOggiIdrico
         }
+    };
 
+    localStorage.setItem('reportData', JSON.stringify(reportData));
+
+    let reportURL = '';
+    switch (tipoReport) {
+        case 'idrogeologico':
+            reportURL = 'idrogeologico.html';
+            break;
+        case 'temporali':
+            reportURL = 'temporali.html';
+            break;
+        case 'idrico':
+            reportURL = 'idrico.html';
+            break;
+        case 'complessivo':
+            reportURL = 'allertetricarico.html';
+            break;
+        default:
+            reportURL = 'allertetricarico.html';
+            break;
+    }
+    window.open(reportURL, '_blank');
+}
         function mostraMappa(rischio) {
             const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
             const allertaOggiTemp = document.getElementById('temporali-oggi').value;
