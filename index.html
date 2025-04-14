@@ -58,34 +58,18 @@
 
         #mappa-container {
             margin-top: 30px;
-            background-color: white; /* Imposta uno sfondo bianco di default */
+            background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border-top: 5px solid #3498db;
             text-align: center;
-            position: relative;
-            overflow: hidden; /* Importante per contenere l'overlay */
         }
         #tricarico-mappa-img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 10px auto;
-            position: relative; /* Assicura che sia sopra l'overlay */
-            z-index: 1;
-        }
-        #color-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0.5;
-            background-color: transparent; /* Inizializza come trasparente */
-            border-radius: 8px;
-            z-index: 0; /* Assicura che sia sotto l'immagine */
         }
         button {
             background-color: #3498db;
@@ -200,7 +184,7 @@
 
     <div id="button-container">
         <button onclick="generaReport('idrogeologico')">Report Idrogeologico</button>
-        <button onclick="generaReport('temporali')">Report Idrogeologico per Temporali</button>
+        <button onclick="generaReport('temporali')">Report Temporali</button>
         <button onclick="generaReport('idrico')">Report Idrico</button>
         <button onclick="generaReport('complessivo')">Report Complessivo</button>
     </div>
@@ -208,13 +192,12 @@
     <div id="mappa-container">
         <h2>Mappa di Tricarico (Allerta Idrogeologico Oggi)</h2>
         <img id="tricarico-mappa-img" src="tricarico.svg" alt="Mappa di Tricarico">
-        <div id="color-overlay"></div>
     </div>
 
     <div id="mappe-button-container">
-        <button onclick="generaMappa('idrogeologico')">Mappa Idrogeologico (Oggi)</button>
-        <button onclick="generaMappa('temporali')">Mappa Temporali (Oggi)</button>
-        <button onclick="generaMappa('idrico')">Mappa Idrico (Oggi)</button>
+        <button onclick="mostraMappa('idrogeologico')">Mappa Idrogeologico (Oggi)</button>
+        <button onclick="mostraMappa('temporali')">Mappa Temporali (Oggi)</button>
+        <button onclick="mostraMappa('idrico')">Mappa Idrico (Oggi)</button>
     </div>
 
     <script>
@@ -261,55 +244,90 @@
                 }
             };
 
-            // Salva i dati nel localStorage
             localStorage.setItem('reportData', JSON.stringify(reportData));
 
-            // Apri la pagina corretta in base al tipo di report
+            let reportURL = '';
             switch (tipoReport) {
                 case 'idrogeologico':
-                    window.open('idrogeologico.html', '_blank');
+                    reportURL = 'idrogeologico.html';
                     break;
                 case 'temporali':
-                    window.open('temporali.html', '_blank');
+                    reportURL = 'temporali.html';
                     break;
                 case 'idrico':
-                    window.open('idrico.html', '_blank');
+                    reportURL = 'idrico.html';
                     break;
                 case 'complessivo':
-                    window.open('allertetricarico.html', '_blank');
+                    reportURL = 'allertetricarico.html';
                     break;
                 default:
-                    window.open('allertetricarico.html', '_blank');
+                    reportURL = 'allertetricarico.html';
                     break;
             }
+            window.open(reportURL, '_blank');
         }
 
-        function generaMappa(rischio) {
+        function mostraMappa(rischio) {
             const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
             const allertaOggiTemp = document.getElementById('temporali-oggi').value;
             const allertaOggiIdrico = document.getElementById('idrico-oggi').value;
+            const mappaImg = document.getElementById('tricarico-mappa-img');
 
-            let livelloAllerta = 'verde'; // Default
+            let nomeFileMappa = 'tricarico.svg'; // Default
 
             switch (rischio) {
                 case 'idrogeologico':
-                    livelloAllerta = allertaOggiIdro;
+                    switch (allertaOggiIdro) {
+                        case 'giallo':
+                            nomeFileMappa = 'tricaricogiallo.svg';
+                            break;
+                        case 'arancione':
+                            nomeFileMappa = 'tricaricoarancio.svg';
+                            break;
+                        case 'rosso':
+                            nomeFileMappa = 'tricaricarosso.svg';
+                            break;
+                        default: // verde o altro
+                            nomeFileMappa = 'tricarico.svg';
+                            break;
+                    }
                     break;
                 case 'temporali':
-                    livelloAllerta = allertaOggiTemp;
+                    switch (allertaOggiTemp) {
+                        case 'giallo':
+                            nomeFileMappa = 'tricaricogiallo.svg';
+                            break;
+                        case 'arancione':
+                            nomeFileMappa = 'tricaricoarancio.svg';
+                            break;
+                        case 'rosso':
+                            nomeFileMappa = 'tricaricarosso.svg';
+                            break;
+                        default: // verde o altro
+                            nomeFileMappa = 'tricarico.svg';
+                            break;
+                    }
                     break;
                 case 'idrico':
-                    livelloAllerta = allertaOggiIdrico;
+                    switch (allertaOggiIdrico) {
+                        case 'giallo':
+                            nomeFileMappa = 'tricaricogiallo.svg';
+                            break;
+                        case 'arancione':
+                            nomeFileMappa = 'tricaricoarancio.svg';
+                            break;
+                        case 'rosso':
+                            nomeFileMappa = 'tricaricarosso.svg';
+                            break;
+                        default: // verde o altro
+                            nomeFileMappa = 'tricarico.svg';
+                            break;
+                    }
                     break;
             }
 
-            const mappaData = {
-                livelloAllerta: livelloAllerta,
-                rischio: rischio
-            };
-
-            localStorage.setItem('mappaData', JSON.stringify(mappaData));
-            window.open('mappeallerte.html', '_blank');
+            mappaImg.src = nomeFileMappa;
+            document.querySelector('#mappa-container h2').textContent = `Mappa di Tricarico (Allerta ${rischio.charAt(0).toUpperCase() + rischio.slice(1)} Oggi)`;
         }
 
         function getAlertColor(livelloAllerta) {
@@ -327,29 +345,6 @@
             }
         }
 
-        function aggiornaColoreMappa(livelloAllerta) {
-            const colorOverlay = document.getElementById('color-overlay');
-            colorOverlay.style.backgroundColor = getAlertColor(livelloAllerta);
-        }
-
-        // Aggiorna il colore della mappa iniziale
-        const initialAllertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
-        aggiornaColoreMappa(initialAllertaOggiIdro);
-
-        // Aggiorna il colore della mappa quando cambia la selezione
-        document.getElementById('idrogeologico-oggi').addEventListener('change', function() {
-            aggiornaColoreMappa(this.value);
-        });
-
-        document.getElementById('temporali-oggi').addEventListener('change', function() {
-            aggiornaColoreMappa(this.value);
-        });
-
-        document.getElementById('idrico-oggi').addEventListener('change', function() {
-            aggiornaColoreMappa(this.value);
-        });
-
-        // Aggiorna le visualizzazioni (i quadratini colorati)
         function aggiornaVisualizzazione() {
             const rischiOggi = ['idrogeologico', 'temporali', 'idrico'];
             const rischiDomani = ['idrogeologico', 'temporali', 'idrico'];
@@ -365,14 +360,23 @@
                 const visualizzazioneDomani = document.getElementById(`visualizzazione-${rischio}-domani`);
                 visualizzazioneDomani.className = `alert-display ${selezioneDomani.value}`;
             });
+
+            // Aggiorna la mappa visualizzata nella pagina principale
+            const rischioAttualeMappa = document.querySelector('#mappa-container h2').textContent.split('(')[1].split(' ')[0].toLowerCase();
+            mostraMappa(rischioAttualeMappa);
         }
 
-        // Inizializza le visualizzazioni
+        // Inizializza le visualizzazioni e la mappa
         aggiornaVisualizzazione();
 
-        // Aggiorna le visualizzazioni al cambio delle select
+        // Aggiorna le visualizzazioni e la mappa al cambio delle select
         document.querySelectorAll('select').forEach(select => {
             select.addEventListener('change', aggiornaVisualizzazione);
+        });
+
+        // Mostra la mappa idrogeologica di default al caricamento
+        document.addEventListener('DOMContentLoaded', function() {
+            mostraMappa('idrogeologico');
         });
     </script>
 </body>
