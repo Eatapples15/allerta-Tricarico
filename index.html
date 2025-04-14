@@ -265,6 +265,29 @@ function generaReport(tipoReport) {
     }
     window.open(reportURL, '_blank');
 }
+
+    localStorage.setItem('reportData', JSON.stringify(reportData));
+
+    let reportURL = '';
+    switch (tipoReport) {
+        case 'idrogeologico':
+            reportURL = 'idrogeologico.html';
+            break;
+        case 'temporali':
+            reportURL = 'temporali.html';
+            break;
+        case 'idrico':
+            reportURL = 'idrico.html';
+            break;
+        case 'complessivo':
+            reportURL = 'allertetricarico.html';
+            break;
+        default:
+            reportURL = 'allertetricarico.html';
+            break;
+    }
+    window.open(reportURL, '_blank');
+}
         function mostraMappa(rischio) {
             const allertaOggiIdro = document.getElementById('idrogeologico-oggi').value;
             const allertaOggiTemp = document.getElementById('temporali-oggi').value;
