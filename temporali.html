@@ -51,34 +51,34 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const reportData = JSON.parse(localStorage.getItem('reportData'));
-            const mappaImg = document.getElementById('tricarico-mappa-report');
+       document.addEventListener('DOMContentLoaded', function() {
+    const reportData = JSON.parse(localStorage.getItem('reportData'));
+    const mappaImg = document.getElementById('tricarico-mappa-report');
 
-            if (reportData) {
-                document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
-                document.getElementById('temporali-oggi-report').textContent = reportData.oggi.temporali;
-                document.getElementById('data-domani-report').textContent = reportData.domani.data;
-                document.getElementById('temporali-domani-report').textContent = reportData.domani.temporali;
+    if (reportData) {
+        document.getElementById('data-oggi-report').textContent = reportData.oggi.data;
+        document.getElementById('temporali-oggi-report').textContent = reportData.oggi.temporali;
+        document.getElementById('data-domani-report').textContent = reportData.domani.data;
+        document.getElementById('temporali-domani-report').textContent = reportData.domani.temporali;
 
-                let nomeFileMappa = 'tricarico.svg';
-                switch (reportData.oggi.temporali) {
-                    case 'giallo':
-                        nomeFileMappa = 'tricaricogiallo.svg';
-                        break;
-                    case 'arancione':
-                        nomeFileMappa = 'tricaricoarancio.svg';
-                        break;
-                    case 'rosso':
-                        nomeFileMappa = 'tricaricarosso.svg';
-                        break;
-                    default:
-                        nomeFileMappa = 'tricarico.svg';
-                        break;
-                }
-                mappaImg.src = nomeFileMappa;
-            }
-        });
+        let nomeFileMappa = 'tricarico.svg';
+        switch (reportData.oggi.temporali) {
+            case 'giallo':
+                nomeFileMappa = 'tricaricogiallo.svg';
+                break;
+            case 'arancione':
+                nomeFileMappa = 'tricaricoarancio.svg';
+                break;
+            case 'rosso':
+                nomeFileMappa = 'tricaricarosso.svg';
+                break;
+            default:
+                nomeFileMappa = 'tricarico.svg';
+                break;
+        }
+        mappaImg.src = nomeFileMappa;
+    }
+});
     </script>
 </body>
 </html>
